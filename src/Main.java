@@ -1,4 +1,5 @@
 import com.moneda.*;
+import com.opciones.OpcionMoneda;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -12,85 +13,65 @@ public class Main {
         List<String> opciones = new ArrayList<String>();
         opciones.add("conversor de monedas");
         opciones.add("Conversor de temeperaturas");
-
-        List<String> conversorMoneda = new ArrayList<String>();
-        conversorMoneda.add("De Soles a Dolar");
-        conversorMoneda.add("De Soles a Euro");
-        conversorMoneda.add("De Soles a Libras");
-        conversorMoneda.add("De Soles a Yen");
-        conversorMoneda.add("De Soles a Won Coreano");
-        conversorMoneda.add("De Dolar a Soles");
-        conversorMoneda.add("De Euro a Soles");
-        conversorMoneda.add("De Libras a Soles");
-        conversorMoneda.add("De Yen a Soles");
-        conversorMoneda.add("De Won Coreano a Soles");
-
-        Moneda[] arrayMonedas = {new Dolar(),new Euro(),new Libras(),new Yen(), new WonCoreano()};
-
-
+        OpcionMoneda opcionMoneda = new OpcionMoneda();
         Object[] opcionesArray = opciones.toArray();
-        Object[] opcionesMoneda = conversorMoneda.toArray();
-        Object seleccion = JOptionPane.showInputDialog(
-                null, // Componente padre
-                "Elige que desea convertir", // Mensaje
-                "Lista con JoptionPane", // Título
-                JOptionPane.QUESTION_MESSAGE, // Tipo de mensaje
-                null, // Icono
-                opcionesArray, // Arreglo de opciones
-                opcionesArray[0] // Opción por defecto
-        );
 
-        int indice = opciones.indexOf(seleccion);
+        int indice;
         Double valor = null;
-        if (indice == 0) {
-            while (true) {
-                try {
-                    valor = Double.valueOf(JOptionPane.showInputDialog("Ingresar la cantidad de dinero que deseas convertir"));
+        do {
+            Object seleccion = JOptionPane.showInputDialog(
+                    null, // Componente padre
+                    "Elige que desea convertir", // Mensaje
+                    "Lista con JoptionPane", // Título
+                    JOptionPane.QUESTION_MESSAGE, // Tipo de mensaje
+                    null, // Icono
+                    opcionesArray, // Arreglo de opciones
+                    opcionesArray[0] // Opción por defecto
+            );
+            indice = opciones.indexOf(seleccion);
+            switch (indice){
+                case 0:
+                    while (true){
+                      try {
+                          valor = Double.valueOf(JOptionPane.showInputDialog("Ingresar la cantidad de dinero que deseas convertir"));
+                          break;
+
+                      }catch (NumberFormatException e){
+                          JOptionPane.showMessageDialog(null, "Por favor ingrese valores numericos ");
+                      }
+                      catch (NullPointerException e){
+                          break;
+                      }
+                    }
+                    if(valor!=null){
+                        int indiceMenuMoneda = opcionMoneda.MenuMoneda();
+                        if(indiceMenuMoneda != -1){
+                            String cambioMoneda =  opcionMoneda.ResultadoConversion(valor,indiceMenuMoneda);
+                            JOptionPane.showMessageDialog(null, cambioMoneda);
+                        }
+                    }
+
                     break;
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Por favor ingrese valores numericos ");
-                }
-                catch (NullPointerException e){
+                case 1:
+                    System.out.println("Elegiste temperaturas");
                     break;
-                }
-            }
-            if (valor != null){
-                Object seleccionMoneda = JOptionPane.showInputDialog(
-                        null, // Componente padre
-                        "Elija la moneda a la que deseas convertir tu dinero", // Mensaje
-                        "Converso Moneda", // Título
-                        JOptionPane.QUESTION_MESSAGE, // Tipo de mensaje
-                        null, // Icono
-                        opcionesMoneda, // Arreglo de opciones
-                        opcionesMoneda[0] // Opción por defecto
-                );
-                int indiceMoneda = conversorMoneda.indexOf(seleccionMoneda);
-                Moneda monedaActual = null;
-
-                if(indiceMoneda>-1 && indiceMoneda < 5){
-                    monedaActual = arrayMonedas[indiceMoneda];
-                    String cambioMoneda = monedaActual.Convertir(valor);
-                    JOptionPane.showMessageDialog(null, cambioMoneda);
-
-                }
-                else if(indiceMoneda >= 5) {
-
-                    indiceMoneda = indiceMoneda - 5;
-                    monedaActual = arrayMonedas[indiceMoneda];
-                    String cambioMoneda = monedaActual.Local(valor);
-                    JOptionPane.showMessageDialog(null, cambioMoneda);
-
-                }
 
             }
-//            ArrayList<Moneda> listaMonedas= new ArrayList<>();
+            int menuContinuar = JOptionPane.showOptionDialog(
+                    null,
+                    "¿Desea continuar?",
+                    "Seleccione una opción",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,    // null para icono por defecto.
+                    new Object[] { "Si", "No", "Cancelar" },   // null para YES, NO y CANCEL
+                    "opcion 1");
+            if(menuContinuar == -1 || menuContinuar >0){
+                indice = -1;
+            }
 
-        }
+        }while (indice != -1 );
 
-
-
-        System.out.println("Indice general "+indice);
-        System.out.println(valor);
 
     }
 }
