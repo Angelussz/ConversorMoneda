@@ -29,17 +29,7 @@ public class OpcionMoneda {
     }
 
     public int MenuMoneda() {
-        Object[] opcionesMoneda = this.conversorMoneda.toArray();
-        Object seleccionMoneda =  JOptionPane.showInputDialog(
-                null, // Componente padre
-                "Elige que la moneda que desea convertir", // Mensaje
-                "Lista de Monedas a Convertir", // Título
-                JOptionPane.QUESTION_MESSAGE, // Tipo de mensaje
-                null, // Icono
-                opcionesMoneda, // Arreglo de opciones
-                opcionesMoneda[0] // Opción por defecto
-        );
-        return conversorMoneda.indexOf(seleccionMoneda);
+        return  new Ventanas().VentanaMenu(conversorMoneda,"Escoge las conversion de moneda","Conversor Moneda");
 
     }
     public String ResultadoConversion(double valor, int indiceMoneda){

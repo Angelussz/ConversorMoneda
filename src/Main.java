@@ -1,5 +1,8 @@
-import com.moneda.*;
+
+import com.opciones.ConversorTemperatura;
 import com.opciones.OpcionMoneda;
+import com.opciones.OpcionTemperatura;
+import com.opciones.Ventanas;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -10,52 +13,49 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        List<String> opciones = new ArrayList<String>();
+        List<String> opciones = new ArrayList<>();
         opciones.add("conversor de monedas");
         opciones.add("Conversor de temeperaturas");
         OpcionMoneda opcionMoneda = new OpcionMoneda();
+        OpcionTemperatura opcionTemperatura = new OpcionTemperatura();
         Object[] opcionesArray = opciones.toArray();
+        Ventanas ventanas = new Ventanas();
+        ConversorTemperatura[] conversores = new ConversorTemperatura[6];
+
+        conversores[0] = x -> x* 9/5 +32;
+        conversores[1] = x -> x+273.15;
+        conversores[2] = x -> (x-32) * 5/9;
+        conversores[3] = x -> (x-32) * 5/9 + 273.15;
+        conversores[4] = x -> x-273.15;
+        conversores[5] = x -> (x-273.15)*9/5 + 32;
+
 
         int indice;
         Double valor = null;
         do {
-            Object seleccion = JOptionPane.showInputDialog(
-                    null, // Componente padre
-                    "Elige que desea convertir", // Mensaje
-                    "Lista con JoptionPane", // Título
-                    JOptionPane.QUESTION_MESSAGE, // Tipo de mensaje
-                    null, // Icono
-                    opcionesArray, // Arreglo de opciones
-                    opcionesArray[0] // Opción por defecto
-            );
-            indice = opciones.indexOf(seleccion);
-            switch (indice){
-                case 0:
-                    while (true){
-                      try {
-                          valor = Double.valueOf(JOptionPane.showInputDialog("Ingresar la cantidad de dinero que deseas convertir"));
-                          break;
-
-                      }catch (NumberFormatException e){
-                          JOptionPane.showMessageDialog(null, "Por favor ingrese valores numericos ");
-                      }
-                      catch (NullPointerException e){
-                          break;
-                      }
-                    }
-                    if(valor!=null){
+            indice = ventanas.VentanaMenu(opciones,"Eligue que deseas convertir","Lista de conversiones");
+            switch (indice) {
+                case 0 -> {
+                    valor = ventanas.InputDataDouble("Ingresa la cantidad de dinero que deseas convertir");
+                    if (valor != null) {
                         int indiceMenuMoneda = opcionMoneda.MenuMoneda();
-                        if(indiceMenuMoneda != -1){
-                            String cambioMoneda =  opcionMoneda.ResultadoConversion(valor,indiceMenuMoneda);
+                        if (indiceMenuMoneda != -1) {
+                            String cambioMoneda = opcionMoneda.ResultadoConversion(valor, indiceMenuMoneda);
                             JOptionPane.showMessageDialog(null, cambioMoneda);
                         }
                     }
+                }
+                case 1 -> {
+                    valor = ventanas.InputDataDouble("Ingrese el valor numerico de temperatura que desee convertir");
+                    if (valor != null) {
+                        int indiceMenuTemperatura = opcionTemperatura.MenuTemperatura();
 
-                    break;
-                case 1:
-                    System.out.println("Elegiste temperaturas");
-                    break;
-
+                        if (indiceMenuTemperatura != -1) {
+                            String cambioMoneda = "De "+opcionTemperatura.conversorMensaje(indiceMenuTemperatura)+ " es "+ conversores[indiceMenuTemperatura].conversor(valor);
+                            JOptionPane.showMessageDialog(null, cambioMoneda);
+                        }
+                    }
+                }
             }
             int menuContinuar = JOptionPane.showOptionDialog(
                     null,
